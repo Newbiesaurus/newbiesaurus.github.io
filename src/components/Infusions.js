@@ -18,22 +18,10 @@ export default {
     `,
     
     data() {
+        if (!localStorage.getItem("infusions")) {var infusionP = []}
+        else {var infusionP = JSON.parse(localStorage.getItem("infusions"))}
         return {
-            infusions: [ {
-                name: 'Heparin', 
-                concentration: '50',
-                units: '4',
-                rate: '27',
-                volume: '500', 
-                volumeDec: '0.0075',
-                weight: '75',
-                edit: false,
-                running: false,
-                completed: false,
-                favorites: false,
-                delete: false,
-                id: 1,
-            }],
+            infusions: infusionP
         }
     },
     
@@ -64,6 +52,9 @@ export default {
                 delete: false,
                 id: this.infusions.length +1,
             });
+
+            localStorage.setItem("infusions"),
+            JSON.stringify(this.infusions);
         },
     }
 }
