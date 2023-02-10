@@ -53,8 +53,8 @@ export default {
                 id: this.infusions.length +1,
             });
 
-            localStorage.setItem("infusions"),
-            JSON.stringify(this.infusions);
+            localStorage.setItem("infusions",
+            JSON.stringify(this.infusions));
         },
     }
 }
