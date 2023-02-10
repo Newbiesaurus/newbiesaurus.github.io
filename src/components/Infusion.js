@@ -7,7 +7,7 @@ export default {
     template: `
         <li v-if="infusion.edit != true">
             <div class="grid grid-cols-5 gap-4 p-2 flex items-center overflow-hidden">
-                <div class="p-2">
+                <div class="col-span-2 p-2">
                     <button class="bg-gray-400 hover:bg-gray-800 
                         rounded px-7 py-2 p-2" @click="infusion.edit = true">Edit</button>
                     {{ infusion.name }} <label v-show="infusion.units > 1"> 
