@@ -1,60 +1,82 @@
+import InfusionTab from "./InfusionTab.js"
 import InfusionList from "./InfusionList.js"
-import InfusionEdit from "./InfusionEdit.js"
-import InfusionCreate from "./InfusionCreate.js"
-import InfusionTimer from "./InfusionTimer.js"
+import InfusionEdit from "./InfusionEdit.js";
+import InfusionCreate from "./InfusionCreate.js";
 
 
 export default {
-    components: { InfusionList, InfusionEdit, InfusionCreate, InfusionTimer },
+    components: { InfusionTab, InfusionList, InfusionEdit, InfusionCreate },
+
 
     template: `
-        <section class="space-y-6">
-            <infusion-list :infusions="filters.infusing" title="Infusing"></infusion-list>
-            <infusion-list :infusions="filters.completed" title="Completed"></infusion-list>
-            <infusion-list :infusions="filters.favorites" title="favorites"></infusion-list>
+        <div class="space-y-6 bg-blue-400">
+            <infusion-tab title="Infusing" :tabSet="tabSet" :infusions="filters.infusing"></infusion-tab>
+            <infusion-tab title="Completed" :tabSet="tabSet" :infusions="filters.completed"></infusion-tab>
+            <infusion-tab title="Favorites" :tabSet="tabSet" :infusions="filters.favorites"></infusion-tab>
+        </div>
 
-            <infusion-create @add="add" :infusions="infusions"></infusion-create>
-        </section>
+
+        <div>
+            <infusion-list title="Infusing" :tabSet="tabSet" :infusions="filters.infusing" @save="save"></infusion-list>
+            <infusion-list title="Completed" :tabSet="tabSet" :infusions="filters.completed" @save="save"></infusion-list>
+            <infusion-list title="Favorites" :tabSet="tabSet" :infusions="filters.favorites" @save="save"></infusion-list>
+        </div>
+
+
+        <div class="space-y-6"><infusion-create @add="add" :infusions="infusions"></infusion-create></div>
     `,
-    
-    data() {
+
+
+    data () {
         if (!localStorage.getItem("infusions")) {var infusionP = []}
         else {var infusionP = JSON.parse(localStorage.getItem("infusions"))}
         return {
-            infusions: infusionP
+            infusions: infusionP,
+            tabSet:[{name: "Infusing"}]
         }
     },
-    
+
+
     computed: {
         filters() {
             return {
-                infusing: this.infusions.filter(infusion => !infusion.complete && !infusion.delete),
-                completed: this.infusions.filter(infusion => infusion.complete && !infusion.delete && !infusion.favorites),
-                favorites: this.infusions.filter(infusion => infusion.favorites && !infusion.delete),
+                infusing: this.infusions.filter(infusion => !infusion.complete && infusion.active),
+                completed: this.infusions.filter(infusion => infusion.complete && infusion.active && !infusion.favorites),
+                favorites: this.infusions.filter(infusion => infusion.favorites && infusion.active),
             }
         }
     },
 
+
     methods: {
-        add(infusion, concentration, units, rate, volume, volumedec, weight) {
+        save() {
+            var tempInfusion = this.infusions;
+            localStorage.clear();
+            localStorage.clear();
+            localStorage.setItem("infusions",
+            JSON.stringify(tempInfusion));
+           
+
+
+        },
+        add(name, concentration, units, rate, volume, weight) {
             this.infusions.push({
-                name: infusion, 
+                name: name,
                 concentration: concentration,
                 units: units,
                 rate: rate,
                 volume: volume,
-                volumeDec: volumedec,
                 weight: weight,
+                end: 0,
                 edit: false,
                 running: false,
                 completed: false,
                 favorites: false,
-                delete: false,
+                active: true,
                 id: this.infusions.length +1,
             });
-
-            localStorage.setItem("infusions",
-            JSON.stringify(this.infusions));
+           
+            this.save()
         },
     }
 }
