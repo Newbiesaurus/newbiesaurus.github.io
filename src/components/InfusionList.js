@@ -6,9 +6,7 @@ export default {
 
 
     template: `
-        <section v-show="tabSet.name != title">
-        </section>
-        <section v-else class="bg-blue-200">
+        <section v-show="tabSet.name === title" class="bg-blue-200">
             <ul>
                 <infusion
                     v-for="infusion in infusions"
