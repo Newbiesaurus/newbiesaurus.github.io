@@ -6,7 +6,7 @@ export default {
 
 
     template: `
-        <section v-if="tabSet.name != title">
+        <section v-show="tabSet.name != title">
         </section>
         <section v-else class="bg-blue-200">
             <ul>
