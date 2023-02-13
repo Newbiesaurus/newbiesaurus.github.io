@@ -56,7 +56,7 @@ export default {
             this.infusion.edit = false;
             this.infusion.rate = this.corCalcRates
             this.infusion.volume = this.corCalcVolume
-   
+            this.infusion.end = Date.now();
             this.$emit('save')        
         }
     },
