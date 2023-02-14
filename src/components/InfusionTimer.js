@@ -3,7 +3,7 @@ export default {
     
     <div class="border-b-4 border-blue-300"><label>Volume:</label>
         <label class="text-blue-800 text-2xl"><span :class="infusion.running && 
-        'text-red-600'">{{ displayVolume }} mL</span></label>
+        'text-red-600'">{{ this.infusion.volume }} mL</span></label>
 
         <label v-show="!infusion.complete"><button v-if="!infusion.running" @click="timer" 
             class="text-white bg-blue-600 hover:bg-blue-800 
@@ -28,7 +28,8 @@ export default {
     data() {
         return {
             timeCD: '',
-            displayVolume: this.infusion.volume,
+            savedVolume:'',
+
             countDownTimer() {
             if (this.infusion.running === true) {
                 var endTime = this.infusion.end + this.timeComplete;
@@ -41,7 +42,7 @@ export default {
                 console
                 if (t > 0) {
                     setTimeout(() =>{
-                        this.displayVolume = Math.round((this.infusion.volume - volumeL)*100)/100;
+                        this.infusion.volume = Math.round((this.savedVolume - volumeL) * 100) /100;
                         this.timeCD = Math.floor(t / 1000)
                         this.countDownTimer();
                     }, 1000)
@@ -60,7 +61,8 @@ export default {
 
     methods: {
         timer(){
-            this.displayVolume = this.infusion.volume;
+            localStorage.setItem(this.infusion.name,this.infusion.volume)
+            this.savedVolume = localStorage.getItem(this.infusion.name)
             this.infusion.end = Date.now();
             this.infusion.running = true;
             this.$emit('save');
@@ -68,7 +70,7 @@ export default {
         },
 
         message() {
-            if (this.infusion.running === true) {alert (this.infusion.name + " is paused.")}
+            if (this.infusion.running === true) {alert (this.infusion.name + " was paused and placed in completed.")}
             else {alert (this.infusion.name + " is completed.")}
         },
 
@@ -91,7 +93,7 @@ export default {
 
     computed: {
         timeComplete() {
-            return (this.infusion.volume / this.infusion.rate) * 3600000
+            return (this.savedVolume / this.infusion.rate) * 3600000
         },
 
         volumeDec() {
