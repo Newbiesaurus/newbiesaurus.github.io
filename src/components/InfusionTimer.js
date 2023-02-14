@@ -1,28 +1,29 @@
 export default {
     template: `
-   
-    <div class="border border-blue-300"><label>Volume:</label>
-        <label class="text-blue-800 text-2xl"><span :class="infusion.running &&
+    
+    <div class="border-b-4 border-blue-300"><label>Volume:</label>
+        <label class="text-blue-800 text-2xl"><span :class="infusion.running && 
         'text-red-600'">{{ displayVolume }} mL</span></label>
-        <label v-show="!infusion.complete"><button v-if="!infusion.running" @click="timer"
-            class="text-white bg-blue-600 hover:bg-blue-800
+
+        <label v-show="!infusion.complete"><button v-if="!infusion.running" @click="timer" 
+            class="text-white bg-blue-600 hover:bg-blue-800 
             border-8 rounded border-blue-200 px-5  p-2">Start</button></label>
-       
+        
         <label v-show="infusion.running === true">
-            <button @click="stop" class="text-white bg-blue-600 hover:bg-blue-800
+            <button @click="stop" class="text-white bg-blue-600 hover:bg-blue-800 
             border-2 rounded border-blue-200 px-7 py-2 p-2">Stop</button>
         </label>
+    </div> 
+    
+    <div class="border-b-4 border-blue-300">Time to Complete: 
+        <span :class="infusion.running && 'text-red-600'">{{ timeCD }}</span>
     </div>
-   
-    <div class="border border-blue-300">Time to Complete:
-        <span :class="infusion.running && 'text-red-600'">
-        <label id=id ></label>{{ timeCD }}</span>
+
+    <div class="flex justify-center border-4 border-blue-200" v-if="infusion.complete === true">
+        <button @click="restart" class="text-white bg-blue-600 hover:bg-blue-800 
+        border-2 rounded border-blue-200 px-7 py-2 p-2">Restart</button>
     </div>
-    </li>
 
-
-    <div class="flex justify-center" v-if="infusion.complete === true"><button @click="restart" class="text-white bg-blue-600 hover:bg-blue-800
-    border-2 rounded border-blue-200 px-7 py-2 p-2">Restart</button></div>
     `,
     data() {
         return {
@@ -36,7 +37,6 @@ export default {
                 var volumeL = l * this.volumeDec;
                 console.log("e " + endTime + "t " + t + "n " + now)
 
-
                 console
                 if (t > 0) {
                     setTimeout(() =>{
@@ -49,14 +49,13 @@ export default {
                     this.infusion.running = false;
                     this.infusion.complete = true;
                     this.displayVolume = this.infusion.volume;
-                    alert (this.infusion.name + " is completed and volume was set to " + this.infusion.volume)
-                    this.$emit('save')
-                   
+                    this.$emit('save');
+                    this.message();
+                    
                 }
             }
         }
     },
-
 
     methods: {
         timer(){
@@ -67,44 +66,42 @@ export default {
             this.countDownTimer();
         },
 
+        message() {
+            if (this.infusion.running === true) {alert ("pause")}
+            else {alert ("complete")}
+        },
 
         refresh(){
-           
+            
         },
-
 
         stop() {
-            this.infusion.running = false;
+            this.message();
             this.infusion.complete = true;
             this.infusion.volume = this.displayVolume;
-            alert (this.infusion.name + " was stopped and placed in completed.")
-            this.$emit('save')
+            this.infusion.running = false;
+            this.$emit('save');
         },
         restart() {
-            this.infusion.complete = false;
+            this.infusion.complete = false; 
             this.$emit('save');
         }
     },
 
-
     props: {
         infusion: Object,
     },
-
 
     computed: {
         timeComplete() {
             return (this.infusion.volume / this.infusion.rate) * 3600000
         },
 
-
         volumeDec() {
             return this.infusion.rate / 3600
         }
 
-
     },
-
 
     mounted() {
         if (this.infusion.running === true) {this.displayVolume = this.infusion.volume;
