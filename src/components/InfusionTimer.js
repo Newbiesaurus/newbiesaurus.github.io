@@ -72,10 +72,6 @@ export default {
             else {alert (this.infusion.name + " is completed.")}
         },
 
-        refresh(){
-            
-        },
-
         stop() {
             this.message();
             this.infusion.complete = true;
