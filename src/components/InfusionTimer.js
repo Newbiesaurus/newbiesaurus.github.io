@@ -30,6 +30,7 @@ export default {
             timeCD: '',
             displayVolume: this.infusion.volume,
             countDownTimer() {
+            if (this.infusion.running === true) {
                 var endTime = this.infusion.end + this.timeComplete;
                 var now = Date.now();
                 var t = endTime - now;
@@ -51,8 +52,8 @@ export default {
                     this.displayVolume = this.infusion.volume;
                     this.$emit('save');
                     this.message();
-                    
                 }
+            }
             }
         }
     },
@@ -67,8 +68,8 @@ export default {
         },
 
         message() {
-            if (this.infusion.running === true) {alert ("pause")}
-            else {alert ("complete")}
+            if (this.infusion.running === true) {alert (this.infusion.name + " is paused.")}
+            else {alert (this.infusion.name + " is completed.")}
         },
 
         refresh(){
