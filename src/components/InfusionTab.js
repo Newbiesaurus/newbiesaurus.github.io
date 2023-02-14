@@ -4,21 +4,25 @@ export default {
         <button v-else @click="shrinkTab" class="bg-blue-200 rounded p-2 border-t border-blue-500">{{ title }} ({{infusions.length}})</button>
     `,
 
-
     methods: {
         tabS() {
             this.tabSet.name = this.title;
-
+            localStorage.setItem("tab", this.title)
 
         },
         shrinkTab() {
             this.tabSet.name = null;
+            localStorage.removeItem("tab")
         }
     },
-   
+
+    mounted() {
+        this.tabSet.name = localStorage.getItem("tab")
+    }, 
+    
     props: {
-        title: Array,
-        tabSet: Array,
-        infusions: Array,
+        title: Array, 
+        tabSet: Array, 
+        infusions: Array, 
     }
 }
