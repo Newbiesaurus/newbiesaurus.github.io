@@ -96,6 +96,7 @@ export default {
         restart() {
             this.infusion.complete = false; 
             this.$emit('save');
+            this.timer();
         }
     },
 
