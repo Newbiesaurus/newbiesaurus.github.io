@@ -9,7 +9,7 @@ export default {
     <li v-if="!infusion.edit">
 	    <div class="border-b-8 border-blue-300">
         	<div class="border-b-4 border-blue-300">Infusion:  
-			<label class="text-blue-800 text-2xl">{{ infusion.name }} 
+			<label class="text-blue-800 text-2xl">{{ infusion.name }}
             			<label v-if="infusion.units > 1">{{ infusion.concentration }}</label>
             			(<infusion-units :infusion="infusion"></infusion-units>
             			<label v-if="infusion.units > 1">/mL</label>)
@@ -21,9 +21,10 @@ export default {
 		    </div>
             
         	<div class="border-b-4 border-blue-300" v-show="infusion.units > 1">
-			    <label>Dose: {{ Dose }} <infusion-units :infusion="infusion"></infusion-units> 
+			    <label>Dose: {{ Dose }} <infusion-units :infusion="infusion"></infusion-units>
         			<label v-show="infusion.weight > 1">/kg</label>
-				/hr
+                    <label v-if="infusion.time > 1">/min</label>
+                    <label v-else>/hr</label>
 			    </label>
 		    </div>
 
@@ -51,6 +52,7 @@ export default {
             delete this.infusion.name;
             delete this.infusion.concentration;
             delete this.infusion.units;
+            delete this.infusion.time;
             delete this.infusion.rate;
             delete this.infusion.volume;
             delete this.infusion.volumeDec;
@@ -74,7 +76,7 @@ export default {
 
     computed: {
         Dose() {
-            return (this.infusion.rate * this.infusion.concentration)/this.infusion.weight 
+            return (((this.infusion.rate * this.infusion.gttF)/this.infusion.time) * this.infusion.concentration)/this.infusion.weight 
         },
     },
 
