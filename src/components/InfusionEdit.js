@@ -36,7 +36,7 @@ export default {
 
     data() {
         return {
-            correctedRate: (this.infusion.rate * this.infusion.concentration)/this.infusion.weight, 
+            correctedRate: ((this.infusion.rate/this.infusion.time) * this.infusion.concentration)/this.infusion.weight, 
             correctedVolume: this.infusion.volume, 
             correctedCompleted: 1, 
         }
@@ -61,7 +61,7 @@ export default {
 
     computed: {
         corCalcRates() {
-            return (this.correctedRate * this.infusion.weight)/this.infusion.concentration
+            return (((this.correctedRate/this.infusion.gttF) * this.infusion.time) * this.infusion.weight)/this.infusion.concentration
         },
         corCalcVolume() {
             return this.correctedVolume * this.correctedCompleted
