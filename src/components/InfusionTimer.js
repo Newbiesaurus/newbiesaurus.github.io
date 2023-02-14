@@ -3,7 +3,7 @@ export default {
     
     <div class="border-b-4 border-blue-300"><label>Volume:</label>
         <label class="text-blue-800 text-2xl"><span :class="infusion.running && 
-        'text-red-600'">{{ this.infusion.volume }} mL</span></label>
+        'text-red-600'">{{ displayVolume }} mL</span></label>
 
         <label v-show="!infusion.complete"><button v-if="!infusion.running" @click="timer" 
             class="text-white bg-blue-600 hover:bg-blue-800 
@@ -16,7 +16,9 @@ export default {
     </div> 
     
     <div class="border-b-4 border-blue-300">Time to Complete: 
-        <span :class="infusion.running && 'text-red-600'">{{ timeCD }}</span>
+        <span :class="infusion.running && 'text-red-600'"> {{ timeCD.days }} days 
+            {{ timeCD. hours}} : {{ timeCD.minutes }} : {{ timeCD.seconds }}
+        </span>
     </div>
 
     <div class="flex justify-center border-4 border-blue-200" v-if="infusion.complete === true">
@@ -27,9 +29,15 @@ export default {
     `,
     data() {
         return {
-            timeCD: '',
-            savedVolume:'',
-
+            timeCD: [
+                {
+                    days:'',
+                    hours:'',
+                    minutes:'', 
+                    seconds:'',
+                }
+            ],
+            displayVolume: this.infusion.volume,
             countDownTimer() {
             if (this.infusion.running === true) {
                 var endTime = this.infusion.end + this.timeComplete;
@@ -37,13 +45,18 @@ export default {
                 var t = endTime - now;
                 var l = (now - this.infusion.end) / 1000;
                 var volumeL = l * this.volumeDec;
-                console.log("e " + endTime + "t " + t + "n " + now)
+                var days = Math.floor(t / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((t % (1000 * 60)) / 1000);
 
-                console
                 if (t > 0) {
                     setTimeout(() =>{
-                        this.infusion.volume = Math.round((this.savedVolume - volumeL) * 100) /100;
-                        this.timeCD = Math.floor(t / 1000)
+                        this.displayVolume = Math.round((this.infusion.volume - volumeL) * 100) / 100;
+                        this.timeCD.seconds = seconds
+                        this.timeCD.minutes = minutes
+                        this.timeCD.hours = hours
+                        this.timeCD.days = days
                         this.countDownTimer();
                     }, 1000)
                 }
@@ -61,8 +74,7 @@ export default {
 
     methods: {
         timer(){
-            localStorage.setItem(this.infusion.name,this.infusion.volume)
-            this.savedVolume = localStorage.getItem(this.infusion.name)
+            this.displayVolume = this.infusion.volume;
             this.infusion.end = Date.now();
             this.infusion.running = true;
             this.$emit('save');
@@ -70,7 +82,7 @@ export default {
         },
 
         message() {
-            if (this.infusion.running === true) {alert (this.infusion.name + " was paused and placed in completed.")}
+            if (this.infusion.running === true) {alert (this.infusion.name + " is paused.")}
             else {alert (this.infusion.name + " is completed.")}
         },
 
@@ -93,7 +105,7 @@ export default {
 
     computed: {
         timeComplete() {
-            return (this.savedVolume / this.infusion.rate) * 3600000
+            return (this.infusion.volume / this.infusion.rate) * 3600000
         },
 
         volumeDec() {
